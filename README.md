@@ -1,46 +1,56 @@
 import random
 
 
-def guess_number_game():
-    print("업다운 게임을 시작합니다!")
-    play_again = 'y'
-    best_attempt = float('inf')  # 이전 게임의 최고 시도 횟수를 저장할 변수
-
-    while play_again.lower() == 'y':
-        target_number = random.randint(1, 100)  # 1에서 100 사이의 랜덤한 숫자 선택
-        attempts = 0
-        print(f"이전 게임 플레이어 최고 시도 횟수: {best_attempt}")
-
-        while True:
-            try:
-                user_input = int(input("숫자를 입력하세요: "))
-                if user_input < 1 or user_input > 100:
-                    print("유효한 범위 내의 숫자를 입력하세요.")
-                    continue
-
-                attempts += 1
-
-                if user_input > target_number:
-                    print("Down")
-                elif user_input < target_number:
-                    print("Up")
-                else:
-                    print("맞았습니다!")
-                    print(f"시도한 횟수: {attempts}")
-
-                    # 최고 시도 횟수 업데이트
-                    if attempts < best_attempt:
-                        best_attempt = attempts
-
-                    break
-            except ValueError:
-                print("올바른 숫자를 입력하세요.")
-
-        play_again = input("다시 하시겠습니까? (y/n): ")
-
-    print("게임을 종료합니다.")
+def get_computer_choice():
+    return random.choice(['가위', '바위', '보'])
 
 
+def determine_winner(user_choice, computer_choice):
+    if user_choice == computer_choice:
+        return '무승부'
+    elif (user_choice == '가위' and computer_choice == '보') or \
+            (user_choice == '보' and computer_choice == '바위') or \
+            (user_choice == '바위' and computer_choice == '가위'):
+        return '사용자 승리'
+    else:
+        return '컴퓨터 승리'
 
-# 게임 실행
-guess_number_game()
+
+def main():
+    wins = 0
+    losses = 0
+    draws = 0
+
+    while True:
+        user_input = input("가위, 바위, 보 중에서 선택하세요: ").strip().lower()
+
+        if user_input not in ['가위', '바위', '보']:
+            print("유효한 값이 아닙니다. 다시 입력하세요.")
+            continue
+
+        user_choice = user_input
+        computer_choice = get_computer_choice()
+        print(f"사용자: {user_choice} 컴퓨터: {computer_choice}")
+
+        result = determine_winner(user_choice, computer_choice)
+
+        if result == '사용자 승리':
+            wins += 1
+        elif result == '컴퓨터 승리':
+            losses += 1
+        else:
+            draws += 1
+
+        print(result)
+
+        play_again = input("다시 시작하겠습니까? (예/아니오): ").strip().lower()
+
+        if play_again != '예' and play_again != 'yes':
+            break
+
+    print(f"게임을 끝냅니다\n승: {wins} 패: {losses} 무승부: {draws}")
+
+
+if __name__ == "__main__":
+    main()
+
